@@ -1,0 +1,15 @@
+library(e1071)
+library(caret)
+library(dplyr)
+data(iris)
+head(iris)
+summary(iris)
+set.seed(123)
+index <- createDataPartition(iris$Species,p=.8,list=FALSE)
+train <- iris[index,]
+test <- iris[-index,]
+nb_class <- naiveBayes(Species ~.,data = train)
+print(nb_class)
+pred <- predict(nb_class,test,type="class")
+cm <- confusionMatrix(test$Species,pred)
+print(cm)

@@ -1,0 +1,31 @@
+library(dplyr)
+library(ggplot2)
+data("iris")
+head(iris)
+summary(iris)
+iris_2 <- iris[-5]
+head(iris_2)
+iris_3 <- as.data.frame(scale(iris_2)) 
+head(iris_3)
+sapply(iris_2,mean)
+sapply(iris_2,sd)
+sapply(iris_3,mean)
+sapply(iris_3,sd)
+library(NbClust)
+#install.packages("NbClust")
+wssplot <- function(data,nc=15,seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for(i in 2:nc){
+    wss[i] <- sum(kmeans(data,centers = i)$withinss)
+  }
+  plot(1:nc,wss,type="b",xlab="no of clustre",ylab="within group sum of squares")
+}
+wssplot(iris_3,nc=30,seed=1234)
+iris_kmeans <- kmeans(iris_3,7)
+iris_kmeans$centers
+iris_kmeans$size
+iris$clstr <- iris_kmeans$cluster
+iris$clstr <- iris_kmeans$cluster
+table(iris$Species,iris$clstr)
+iris$clstr <- as.factor(iris$clstr)
+ggplot(iris,aes(Petal.Length,Petal.Width,color = iris$clstr)) + geom_point()
